@@ -10,9 +10,10 @@ const port = process.env.PORT || 5000;
 // middleware
 app.use(cors({
     origin: [
-        'http://localhost:5173'
+        'http://localhost:5174', 'http://localhost:5173'
         // 'https://car-gallery-9ef24.web.app',
         // 'https://car-gallery-9ef24.firebaseapp.com'
+        // 'https://car-doctor-server-one-neon.vercel.app'
     ],
     credentials: true
 }));
@@ -71,7 +72,8 @@ async function run() {
             const token = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '2hr' });
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             }).send({ success: true })
 
         })
